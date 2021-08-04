@@ -6,13 +6,15 @@ namespace ПриклИнф
 {
     class Lab4
     {
-        int N, x;
+        int N;
         public double[,] M;
         public rebro[] Reb;
         public int[] Color;
         public int[] A;
         public double[] B;
         public int[] C;
+        public bool[] Check;
+        public bool[] PostCheck;
         public struct rebro //Структура, запоминающая инцидентные вершины для каждого ребра
         {
             public int i, j;
@@ -26,6 +28,8 @@ namespace ПриклИнф
             A = new int[N];
             B = new double[N];
             C = new int[N];
+            Check = new bool[N];
+            PostCheck = new bool[N];
         }
         public void InputM() //Заполнение матрицы
         {
@@ -68,7 +72,7 @@ namespace ПриклИнф
             }
             return true;
         }
-        public void Search() //Алгоритм Крускала
+        public void CruscSearch() //Алгоритм Крускала
         {
             if (!Symmetric(M))
                 Console.WriteLine("Матрица введена неверно, введите симметричную матрицу!");
@@ -118,7 +122,7 @@ namespace ПриклИнф
             Lab4 c = new Lab4(N);
             c.InputM();
             c.PrintM();
-            c.Search();
+            c.CruscSearch();
         }
         public void Ways(int x) //Алгоритм Дейкстры
         {
@@ -198,6 +202,93 @@ namespace ПриклИнф
             c.InputM();
             c.PrintM();
             c.Ways(x);
+        }
+        public static void Search()
+        {
+            Console.Write("Введите количество вершин в графе: ");
+            int N = Convert.ToInt32(Console.ReadLine());
+            Lab4 c = new Lab4(N);
+            Console.WriteLine("Значения весовой матрицы не должны превышать 10000!");
+            c.InputM();
+            c.PrintM();
+            for (int i = 0; i < N; i++)
+            {
+                c.Check[i] = false;
+                c.PostCheck[i] = false;
+            }
+            Console.WriteLine("Поиск в глубину:");
+            c.Depth();
+            for (int i = 0; i < N; i++)
+            {
+                c.Check[i] = false;
+                c.PostCheck[i] = false;
+            }
+            Console.WriteLine("\n");
+            Console.WriteLine("Поиск в ширину:");
+            c.Breadth();
+        }
+        public void Depth()
+        {
+            if (!Symmetric(M))
+            {
+                Console.WriteLine("Матрица введена неверно, введите симметричную матрицу c нулевой главной диагональю!");
+            }
+            else
+            {
+                OutD(0);
+            }
+        }
+        public void OutD(int v) // Поиск в глубину
+        {
+            Check[v] = true;
+            Console.Write(" - " + v);
+            for (int i = 0; i < N; i++)
+            {
+                if (Check[i] == false && M[v, i] != 0)
+                {
+                    OutD(i);
+                }
+            }
+        }
+        public void Breadth()
+        {
+            if (!Symmetric(M))
+            {
+                Console.WriteLine("Матрица введена неверно, введите симметричную матрицу c нулевой главной диагональю!");
+            }
+            else
+            {
+                Console.WriteLine("0");
+                Check[0] = true;
+                OutB();
+            }
+        }
+        public void OutB() // Поиск в ширину
+        {
+            for (int i = 0; i < N; i++)
+            {
+                if (PostCheck[i] == false && Check[i] == true)
+                {
+                    for (int j = 0; j < N; j++)
+                    {
+                        if (Check[j] == false && M[i, j] != 0)
+                        {
+                            Console.Write(j + ", ");
+                            Check[j] = true;
+                        }
+                    }
+                    PostCheck[i] = true;
+                }
+            }
+            for (int i = 0; i < N; i++)
+            {
+                if (Check[i] == false)
+                {
+                    Console.WriteLine("\n");
+                    OutB();
+                    break;
+                }
+            }
         }
     }
 }

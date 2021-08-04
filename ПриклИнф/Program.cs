@@ -80,6 +80,7 @@ namespace ПриклИнф
                             switch (int.Parse(Console.ReadLine()))
                             {
                                 case 1:
+                                    Lab4.Search();
                                     cond = false;
                                     break;
                                 case 2:
